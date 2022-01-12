@@ -1,0 +1,22 @@
+# all non-released ros package repos listed from the following files from the UR ROS2 repo: 
+# https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/Universal_Robots_ROS2_Driver-not-released.galactic.repos
+# https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/MoveIt_Support.repos
+# note that in particular the ros2_control and ros2_controllers packages were not included and are installed from binaries. 
+# this is to reduce the amount of code built from source, but if something is failing with the control stack this might be the cause.
+
+repositories:
+  # UR driver moveit dependency
+  warehouse_ros_mongo:
+    type: git
+    url: https://github.com/ros-planning/warehouse_ros_mongo
+    version: ros2
+    
+  Universal_Robots_Client_Library:
+    type: git
+    url: https://github.com/UniversalRobots/Universal_Robots_Client_Library.git
+    version: master
+  ur_msgs:
+    type: git
+    url: https://github.com/destogl/ur_msgs.git
+    version: ros2
+
