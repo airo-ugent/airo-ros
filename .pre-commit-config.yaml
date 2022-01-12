@@ -1,0 +1,110 @@
+# To use:
+#
+#     pre-commit run -a
+#
+# Or:
+#
+#     pre-commit install  # (runs every time you commit in git)
+#
+# To update this file:
+#
+#     pre-commit autoupdate
+#
+# See https://github.com/pre-commit/pre-commit
+
+repos:
+  # Standard hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-xml
+      #- id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  # Python hooks
+  -   repo: https://github.com/myint/autoflake
+      rev: v1.4
+      hooks:
+      -   id: autoflake
+          name: autoflake - remove unused imports and variables
+          entry: autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place --ignore-init-module-imports
+          files: \.py$
+  -   repo: https://github.com/PyCQA/isort
+      rev: 5.10.0
+      hooks:
+      -   id: isort
+          name: isort - sort imports
+          entry: isort --profile black --line-length 119
+          files: \.py$
+  -   repo: https://github.com/psf/black
+      rev: 21.10b0
+      hooks:
+      -   id: black
+          name: black - python code formatter
+          entry: black --line-length 119
+          files: \.py$
+  - repo: https://github.com/pycqa/flake8
+    rev: 3.9.0
+    hooks:
+    - id: flake8
+      args: ["--ignore=E501"]
+
+  - repo: local
+    hooks:
+      - id: ament_cppcheck
+        name: ament_cppcheck
+        description: Static code analysis of C/C++ files.
+        stages: [commit]
+        entry: ament_cppcheck
+        language: system
+        files: \.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
+
+  - repo: local
+    hooks:
+      - id: ament_cpplint
+        name: ament_cpplint
+        description: Static code analysis of C/C++ files.
+        stages: [commit]
+        entry: ament_cpplint
+        language: system
+        files: \.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cu|c\+\+|cxx|tpp|txx)$
+        args: ["--linelength=120"]
+
+  - repo: local
+    hooks:
+      - id: clang-format
+        name: clang-format
+        description: Format files with ClangFormat.
+        entry: clang-format-10
+        language: system
+        files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
+        args: ['-fallback-style=none', '-i']
+
+  # Cmake hooks
+  - repo: local
+    hooks:
+      - id: ament_lint_cmake
+        name: ament_lint_cmake
+        description: Check format of CMakeLists.txt files.
+        stages: [commit]
+        entry: ament_lint_cmake
+        language: system
+        files: CMakeLists.txt$
+
+  # Spellcheck in comments and docs
+  # skipping of *.svg files is not working...
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.0.0
+    hooks:
+      - id: codespell
+        args: ['--write-changes']
+        exclude: \.(svg|pyc)$

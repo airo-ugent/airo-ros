@@ -1,4 +1,4 @@
-# based on 
+# based on
 cd $COLCON_WS
 
 source /opt/ros/$ROS_DISTRO/setup.bash
@@ -13,7 +13,7 @@ apt-get install -y libyaml-cpp-dev
 apt-get install ros-$ROS_DISTRO-ros2-control
 apt-get install ros-$ROS_DISTRO-ros2-controllers
 
-# install ros 
+# install ros
 rosdep install --ignore-src --from-paths src -y -r
 
 # build all local packages

@@ -9,11 +9,11 @@
 
 		"--gpus", "all", // share all gpus using nivida-container-toolkit
 
-        "--privileged", // provide access to a.o. usb devices. Considered insecure as it allows docker to access all resources of the host. 
+        "--privileged", // provide access to a.o. usb devices. Considered insecure as it allows docker to access all resources of the host.
 
 		"-e", "COLCON_WS=${containerWorkspaceFolder}/ROS", // set the COLCON_WS env variable to make build scripts agnostic to local paths and to location where they are called from
-	
-	
+
+
 	],
 
 	"build": {
