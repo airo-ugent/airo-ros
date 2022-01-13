@@ -9,11 +9,12 @@ git clone https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver.git sr
 vcs import src/robots/UR --skip-existing --input src/robots/UR/UR_ROS2_galactic_non-released.repos
 
 # install binaries dependencies
+apt-get update
 apt-get install -y libyaml-cpp-dev
-apt-get install ros-$ROS_DISTRO-ros2-control
-apt-get install ros-$ROS_DISTRO-ros2-controllers
+apt-get install -y ros-$ROS_DISTRO-ros2-control
+apt-get install -y ros-$ROS_DISTRO-ros2-controllers
 
-# install ros
+# install ros deps
 rosdep install --ignore-src --from-paths src -y -r
 
 # build all local packages
