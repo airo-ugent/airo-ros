@@ -3,7 +3,7 @@
 cd $COLCON_WS
 # prepare build scripts
 
-bash ../prepare_build.sh
+bash $COLCON_WS/prepare_build.sh
 
 # install ros dependencies
 source /opt/ros/$ROS_DISTRO/setup.bash
