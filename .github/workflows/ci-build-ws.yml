@@ -13,8 +13,10 @@ jobs:
       - run: |
           export COLCON_WS=${GITHUB_WORKPACE}/ROS
       - run: |
+          echo $(ls)
           cd ${COLCON_WS}
-          ls
+          echo $(ls)
+          echo $(ls src/robots/UR/)
       - run: bash prepare_build.sh
         shell: bash
 
