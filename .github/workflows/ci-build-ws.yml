@@ -13,5 +13,5 @@ jobs:
       - run: |
         export COLCON_WS=${GITHUB_WORKSPACE}/ROS
         bash build.sh
-      shell: bash
-      name: prepare and build
+        shell: bash
+        name: prepare and build
