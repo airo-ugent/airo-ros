@@ -4,6 +4,8 @@ name: CI build
 on:
   pull_request:
   push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -11,7 +13,8 @@ jobs:
     container: moveit/moveit2:galactic-release
     steps:
       - uses: actions/checkout@v2
-      - run: |
+      - name: prepare and build
+        run: |
           export COLCON_WS=${GITHUB_WORKSPACE}/ROS
           bash build.sh
         shell: bash
