@@ -13,10 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          ls
           export COLCON_WS=${GITHUB_WORKPACE}/ROS
       - run: |
+          cd ${COLCON_WS}
+          ls src/robots/UR/
+      - run:
           bash prepare_build.sh
+          shell: bash
+
+      - run:
           bash build.sh
-        name: configure ws and build ros packages
-        shell: bash
+          shell: bash
