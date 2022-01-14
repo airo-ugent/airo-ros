@@ -1,0 +1,17 @@
+name: CI build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: moveit/moveit2:galactic-release
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          bash build.sh
+        name: configure ws and build ros packages
