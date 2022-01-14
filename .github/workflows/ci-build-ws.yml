@@ -3,8 +3,6 @@ name: CI build
 on:
   pull_request:
   push:
-    branches:
-      - main
 
 jobs:
   build:
@@ -17,10 +15,8 @@ jobs:
       - run: |
           cd ${COLCON_WS}
           ls src/robots/UR/
-      - run:
-          bash prepare_build.sh
-          shell: bash
+      - run: bash prepare_build.sh
+        shell: bash
 
-      - run:
-          bash build.sh
-          shell: bash
+      - run: bash build.sh
+        shell: bash
