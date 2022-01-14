@@ -1,3 +1,4 @@
+
 name: CI build
 
 on:
@@ -11,7 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-        export COLCON_WS=${GITHUB_WORKSPACE}/ROS
-        bash build.sh
-      shell: bash
-      name: prepare and build
+          export COLCON_WS=${GITHUB_WORKSPACE}/ROS
+          bash build.sh
+        shell: bash
