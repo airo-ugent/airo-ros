@@ -11,11 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          export COLCON_WS=${GITHUB_WORKPACE}/ROS
+          export COLCON_WS=${GITHUB_WORKPACE}/ROS/
       - run: |
           echo ${COLCON_WS}
       - run: |
-          export COLCON_WS=${GITHUB_WORKPACE}/ROS
+          export COLCON_WS=ROS/
           bash prepare_build.sh
         shell: bash
 
