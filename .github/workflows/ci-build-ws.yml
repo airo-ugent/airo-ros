@@ -13,7 +13,7 @@ jobs:
       - run: |
           export COLCON_WS=${GITHUB_WORKPACE}/ROS/
       - run: |
-          echo ${COLCON_WS}
+          echo ${GITHUB_WORKSPACE}
       - run: |
           export COLCON_WS=ROS/
           bash prepare_build.sh
