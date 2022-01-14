@@ -19,3 +19,4 @@ jobs:
           bash prepare_build.sh
           bash build.sh
         name: configure ws and build ros packages
+        shell: bash

@@ -1,3 +1,5 @@
+#!bin/bash
+
 cd $COLCON_WS
 
 # clone the driver repo
