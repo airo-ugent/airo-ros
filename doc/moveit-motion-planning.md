@@ -37,14 +37,14 @@ Planners are integrated as plugins, cf Moveit schematics.
 
 ### Available motion planners
 #### OMPL
-Moveit's default planner is [OMPL](https://ompl.kavrakilab.org/), which is a sampling-based, configuration space path planner.
-By default, this planner handles cartesian constraints by using forward kinematics and rejection sampling to evaluate the pose. This approach can result in large joint movements and is also very time consuming. An updated version of the OMPL planner improves on this, see below.
+Moveit's default planner is [OMPL](https://ompl.kavrakilab.org/), which is a sampling-based path planner. This planner is probabilistically complete but not real-time.
+By default, this planner works in configuration space. The planner handles cartesian constraints by either sampling in task-space and then using inverse kinematics or by using forward kinematics with rejection sampling to evaluate if the sampled configuration satisfies the cartesian constraints [source](https://vimeo.com/showcase/7812155/video/480482977#t=0h49m30s). The former approach can result in large joint movements, as there are usually multiple configurations that lead to the same pose (not necessarily close to each other in joint space). The latter approach cannot deal with constraints that have a small volume (as samples will almost never fall into that region), which makes it useless to e.g. plan on a line.An updated version of the OMPL planner improves on this by still planning in joint space but projecting each sample into the feasible region to overcome the zero-volume issue. Cf. Constrained OMPL below.
 
-Note that this is actually a Path planner, that only deals with the robot kinematics to find collision-free paths. To convert this path into a trajectory (which includes time-information or equivalently velocity/acceleration profiles), time parameterization is used.
+Note that OMPL is actually a Path planner, that only deals with the robot kinematics to find collision-free paths. To convert this path into a trajectory (which includes time-information or equivalently velocity/acceleration profiles), time parameterization is used.
 
 #### PILZ
 PILZ is an "industrial" motion generator.
-It is a realtime cartesian planner that can generate PTP, LIN and CIRC motions.
+It is a realtime cartesian planner that can generate PTP (point-to-point), LIN (linear) and CIRC (circular) motions.
 It has been [ported](https://github.com/ros-planning/moveit2/pull/452) to Moveit2, but there is no tutorial yet. The tutorial for Noetic can be found [here](https://ros-planning.github.io/moveit_tutorials/doc/pilz_industrial_motion_planner/pilz_industrial_motion_planner.html).
 
 There is also a [ROS2 example](https://github.com/henningkayser/moveit_resources/blob/pr-port_prbt_packages/prbt_moveit_config/launch/demo.launch.py).
@@ -54,7 +54,7 @@ Cartesian planners were historically not worried about collision checking and as
 
 #### Moveit Servo
 
-Moveit Servo is a soft "real-time", Jacobian-based, cartesian planner. It gets to control rates >1kHz (which is a lot faster than the UR e needs) on a best effort . It avoids collisions and singularities, and slows down when moving close towards them. Unlike the other planners, it is not a pluging but a standalone ROS node.
+Moveit Servo is a soft real-time, Jacobian-based, cartesian planner. It gets to control rates >1kHz (which is a lot faster than the UR e needs) on a best effort. It avoids collisions and singularities, and slows down when moving close towards them. Unlike the other planners, it is not a pluging but a standalone ROS node.
 
 [MOveit ROS2 tutorial](https://moveit.picknik.ai/foxy/doc/realtime_servo/realtime_servo_tutorial.html)
 
@@ -65,7 +65,7 @@ More technical information [here](../moveit-servo.md)
 #### Constrained OMPL
 OMPL has integrated cartesian contstraints in 2018 and of late, a PhD Student from the KUL has done a [Summer of Code](https://moveit.ros.org/moveit/2020/09/10/ompl-constrained-planning-gsoc.html) to start integrating them in Moveit.
 
- This allows to use so-called "constraint-projection" to project the constraints onto the configuration space, in which case the sampling planner does not even notice there are constraints. This is in contrast with Moveit's old "constraint-rejection" technique in which the OMPL samples were mapped back to task space and rejected if they did not satisfy the constraints. For constraints such as a 1D line (where the volume is zero), this approach fails notably. Furthermore, this constrained OMPL approach avoids large joint space jumps, resulting in smoother trajectories that can be executed on real robots, as explained in the gsoc blog post.
+ This allows to use so-called "constraint-projection" to project the configuration space samples onto the valid regions, in which case the sampling planner does not even notice there are constraints. This is in contrast with Moveit's old "constraint-rejection" technique in which the OMPL samples were mapped back to task space and rejected if they did not satisfy the constraints. For constraints such as a 1D line (where the volume is zero), this approach fails notably. Furthermore, this constrained OMPL approach avoids large joint space jumps, resulting in smoother trajectories that can be executed on real robots, as explained in the gsoc blog post.
 
 In Moveit's Constrained OMPL, only position constraints have been [merged](https://github.com/ros-planning/moveit2/pull/347) and a demo is available [here](). Orientation constraints seem to be [in progress](https://github.com/ros-planning/moveit2/issues/348).
 
@@ -92,7 +92,7 @@ more about time parameterization [here](https://ros-planning.github.io/moveit_tu
 
 ## Summary
 
-use Moveit Servo for realtime servoing, use OMPL for non-realtime A-B Motion planning, with the cartesian constraints update if required. For Following a user defined path, use the Cartesian Interpolator (with care) or the PILZ planner.
+use Moveit Servo for realtime servoing, use OMPL for non-realtime A-B Motion planning, with the cartesian constraints update if there are large joint jumps or zero-volume constraints. For Following a user defined path, use the Cartesian Interpolator (with care) or the PILZ planner.
 
 ---
 Additional Sources / More information
