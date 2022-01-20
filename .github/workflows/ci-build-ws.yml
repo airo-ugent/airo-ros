@@ -1,3 +1,4 @@
+
 name: CI build
 
 on:
@@ -12,15 +13,8 @@ jobs:
     container: moveit/moveit2:galactic-release
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          export COLCON_WS=${GITHUB_WORKPACE}/ROS
-      - run: |
-          cd ${COLCON_WS}
-          ls src/robots/UR/
-      - run:
-          bash prepare_build.sh
-          shell: bash
-
-      - run:
+      - name: prepare and build
+        run: |
+          export COLCON_WS=${GITHUB_WORKSPACE}/ROS
           bash build.sh
-          shell: bash
+        shell: bash
