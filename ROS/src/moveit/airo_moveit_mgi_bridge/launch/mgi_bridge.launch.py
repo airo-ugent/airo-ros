@@ -3,6 +3,8 @@ import os
 import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -30,6 +32,19 @@ def load_yaml(package_name, file_path):
 
 def generate_launch_description():
     # planning_context
+    declared_arguments = []
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "planning_group",
+            default_value="panda_arm",
+            description="Which group to plan for. Must be defined in the SRDF.",
+        )
+    )
+
+    # load params
+    planning_group_param = LaunchConfiguration("planning_group")
+
     robot_description_config = load_file("moveit_resources_panda_description", "urdf/panda.urdf")
     robot_description = {"robot_description": robot_description_config}
 
@@ -38,13 +53,16 @@ def generate_launch_description():
 
     kinematics_yaml = load_yaml("moveit_resources_panda_moveit_config", "config/kinematics.yaml")
 
+    planning_group = {"planning_group": planning_group_param}
+
     # MoveGroupInterface demo executable
     mgi_bridge = Node(
-        name="test",
+        name="moveit_mgi_bridge",
         package="airo_moveit_mgi_bridge",
         executable="moveit_mgi_bridge",
+        # namespace='moveit_mgi_bridge', # defaulted to node name.
         output="screen",
-        parameters=[robot_description, robot_description_semantic, kinematics_yaml],
+        parameters=[robot_description, robot_description_semantic, kinematics_yaml, planning_group],
     )
 
-    return LaunchDescription([mgi_bridge])
+    return LaunchDescription(declared_arguments + [mgi_bridge])

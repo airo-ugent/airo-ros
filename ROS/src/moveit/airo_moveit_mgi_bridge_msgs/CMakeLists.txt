@@ -7,13 +7,13 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
-set(msg_files
-  #"msg/GripperCmd.msg"
+set(srv_files
   "srv/MoveToPose.srv"
+  "srv/GetFramePose.srv"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
+  ${srv_files}
   DEPENDENCIES
     std_msgs
     geometry_msgs
