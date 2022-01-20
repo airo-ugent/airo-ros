@@ -7,6 +7,8 @@ bash ../prepare_build.sh
 
 # install ros dependencies
 source /opt/ros/$ROS_DISTRO/setup.bash
+apt-get update
+rosdep update
 rosdep install --ignore-src --from-paths src -y -r
 
 # build all local packages
