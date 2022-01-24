@@ -1,0 +1,6 @@
+repositories:
+  # description and driver
+  robotiq_2F85:
+    type: git
+    url: https://github.com/tlpss/robotiq_85_gripper
+    version: ros2

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+  <!-- robot name parameter -->
+  <xacro:arg name="name" default="ur"/>
+  <!-- parameters -->
+  <xacro:arg name="prefix" default="" />
+
+  <xacro:include filename="$(find ur_moveit_config)/srdf/ur_macro.srdf.xacro"/>
+  <xacro:include filename="$(find ur_robotiq_85_moveit_config)/srdf/robotiq_85.srdf.xacro" />
+
+  <xacro:ur_srdf name="$(arg name)" prefix="$(arg prefix)"/>
+  <xacro:robotiq_85_srdf prefix="$(arg prefix)" />
+
+  <group name="ur_robotiq">
+    <group name="$(arg prefix)$(arg name)_manipulator" />
+    <group name="$(arg prefix)robotiq_85"/>
+  </group>
+
+  <!--END EFFECTOR - Purpose - Represent information about an end effector.-->
+  <end_effector name="$(arg prefix)eef" parent_link="$(arg prefix)flange" group="$(arg prefix)robotiq_85" parent_group="$(arg prefix)$(arg name)_manipulator" />
+
+
+  <!-- TODO collisions!-->
+  <disable_collisions link1="$(arg prefix)robotiq_85_base_link" link2 ="$(arg prefix)flange" reason="Adjacent"/>
+  <disable_collisions link1="$(arg prefix)robotiq_85_base_link" link2 ="$(arg prefix)wrist_3_link" reason="Adjacent"/>
+
+</robot>
