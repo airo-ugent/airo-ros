@@ -82,7 +82,7 @@ def generate_launch_description():
     description_file = "ur_robotiq_85.urdf.xacro"
 
     ur_description_package = "ur_description"
-    calibration_package = "ur_robotiq_85_description"  # link to package containing the robot calibration.
+    calibration_package = "ur_description"  # link to package containing the robot calibration (kinematics file).
 
     moveit_config_package = "ur_robotiq_85_moveit_config"
     moveit_config_file = "ur_robotiq_85.srdf.xacro"
