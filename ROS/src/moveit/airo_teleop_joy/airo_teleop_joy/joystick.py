@@ -1,6 +1,5 @@
 import abc
 
-from control_msgs.action import GripperCommand
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 
@@ -9,10 +8,10 @@ class BaseJoystick(abc.ABC):
     def get_twist_from_joy(self, joy_msg: Joy) -> Twist:
         pass
 
-    def get_gripper_command_from_joy(self, joy_msg: Joy) -> GripperCommand:
+    def switch_planning_frame_indicator(self, joy_msg: Joy) -> bool:
         pass
 
-    def switch_planning_frame_indicator(self, joy_msg: Joy) -> bool:
+    def toggle_gripper_indicator(self, joy_msg: Joy) -> bool:
         pass
 
 
@@ -36,31 +35,44 @@ class LogitechF310(BaseJoystick):
     back_button = 6
     start_button = 7
 
-    # helper to do single switch with button press that is not necessarily pressed for single joy message
-    indicator_cooldown = 5
+    def __init__(self, control_rate) -> None:
+        # helpers to do single "toggle" with button press that is not necessarily pressed for a single joy message
+        self.indicator_cooldown_period = control_rate  # 1s
+        self.gripper_indicator_cooldown_period = control_rate / 5  # 0.2s
+
+        self.indicator_cooldown = self.indicator_cooldown_period
+        self.gripper_indicator_cooldown = self.gripper_indicator_cooldown_period
 
     def get_twist_from_joy(self, joy_msg: Joy) -> Twist:
 
         twist = Twist()
 
-        l2_is_angular = joy_msg.buttons[LogitechF310.left_l1_button] or joy_msg.buttons[LogitechF310.right_l1_button]
+        l1 = -1.0 * joy_msg.buttons[LogitechF310.left_l1_button] + joy_msg.buttons[LogitechF310.right_l1_button]
         l2_left = (joy_msg.axes[LogitechF310.left_l2_axis] - 1) / (-2)
         l2_right = (joy_msg.axes[LogitechF310.right_l2_axis] - 1) / (-2)
         l2 = -l2_left if l2_left > 0.01 else l2_right
 
-        twist.linear.x = 0.0 if l2_is_angular else l2
+        twist.linear.x = l2
         twist.linear.y = joy_msg.axes[LogitechF310.left_stick_x_axis] * -1.0
         twist.linear.z = joy_msg.axes[LogitechF310.left_stick_y_axis]
 
         twist.angular.x = joy_msg.axes[LogitechF310.right_stick_x_axis] * -1.0
         twist.angular.y = joy_msg.axes[LogitechF310.right_stick_y_axis]
-        twist.angular.z = l2 if l2_is_angular else 0.0
+        twist.angular.z = l1
 
         return twist
 
+    def toggle_gripper_indicator(self, joy_msg: Joy) -> bool:
+        if not self.gripper_indicator_cooldown and joy_msg.buttons[LogitechF310.a_button]:
+            self.gripper_indicator_cooldown = self.gripper_indicator_cooldown_period
+            return True
+        else:
+            self.gripper_indicator_cooldown = max(self.gripper_indicator_cooldown - 1, 0)
+            return False
+
     def switch_planning_frame_indicator(self, joy_msg: Joy) -> bool:
         if not self.indicator_cooldown and joy_msg.buttons[LogitechF310.start_button]:
-            self.indicator_cooldown = 5
+            self.indicator_cooldown = self.indicator_cooldown_period
             return True
         else:
             self.indicator_cooldown = max(self.indicator_cooldown - 1, 0)

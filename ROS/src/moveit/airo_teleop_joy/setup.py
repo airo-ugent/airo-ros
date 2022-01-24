@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = "teleop_joy"
+package_name = "airo_teleop_joy"
 
 setup(
     name=package_name,
@@ -18,6 +18,6 @@ setup(
     license="TODO: License declaration",
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": ["teleop_joy = teleop_joy.teleop_joy_node:main"],
+        "console_scripts": ["teleop_joy = airo_teleop_joy.teleop_joy_node:main"],
     },
 )
