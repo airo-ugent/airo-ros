@@ -1,5 +1,5 @@
 ## UR ROS2 packages
-Here the official ros2 drivers and their non-released dependencies are cloned.
+Here the official ros2 drivers and their non-released dependencies are cloned (as they are not released yet).
 
 see https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver for more information about the drivers.
 
