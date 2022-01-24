@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur-2F85">
+
+    <!-- UR ROBOT-->
+
+   <!-- import main macro -->
+   <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+
+   <!-- robot name parameter -->
+   <xacro:arg name="name" default="ur"/>
+
+   <!-- parameters -->
+   <xacro:arg name="prefix" default="" />
+   <xacro:arg name="joint_limit_params" default=""/>
+   <xacro:arg name="kinematics_params" default=""/>
+   <xacro:arg name="physical_params" default=""/>
+   <xacro:arg name="visual_params" default=""/>
+   <xacro:arg name="transmission_hw_interface" default=""/>
+   <xacro:arg name="safety_limits" default="false"/>
+   <xacro:arg name="safety_pos_margin" default="0.15"/>
+   <xacro:arg name="safety_k_position" default="20"/>
+   <!-- ros2_control related parameters -->
+   <xacro:arg name="use_fake_hardware" default="false" />
+   <xacro:arg name="fake_sensor_commands" default="false" />
+   <xacro:arg name="headless_mode" default="false" />
+   <xacro:arg name="use_tool_communication" default="false" />
+
+   <!-- initial position for fake hardware -->
+   <xacro:arg name="initial_positions_file" default="$(find ur_description)/config/initial_positions.yaml"/>
+
+   <!-- convert to property to use substitution in function -->
+   <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)"/>
+
+    <!-- copied from https://github.com/UniversalRobots/Universal_Robots_ROS2_Description/blob/ros2/urdf/ur.urdf.xacro-->
+   <!-- create link fixed to the "world" -->
+   <link name="world" />
+
+   <!-- arm -->
+   <xacro:ur_robot
+     name="$(arg name)"
+     prefix="$(arg prefix)"
+     parent="world"
+     joint_limits_parameters_file="$(arg joint_limit_params)"
+     kinematics_parameters_file="$(arg kinematics_params)"
+     physical_parameters_file="$(arg physical_params)"
+     visual_parameters_file="$(arg visual_params)"
+     transmission_hw_interface="$(arg transmission_hw_interface)"
+     safety_limits="$(arg safety_limits)"
+     safety_pos_margin="$(arg safety_pos_margin)"
+     safety_k_position="$(arg safety_k_position)"
+     use_fake_hardware="$(arg use_fake_hardware)"
+     fake_sensor_commands="$(arg fake_sensor_commands)"
+     headless_mode="$(arg headless_mode)"
+     initial_positions="${load_yaml(initial_positions_file)}"
+     use_tool_communication="$(arg use_tool_communication)" >
+     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+   </xacro:ur_robot>
+    <!-- ROBOTIQ 2F85 GRIPPER-->
+
+    <xacro:include filename="$(find robotiq_85_description)/urdf/robotiq_85_gripper_macro.urdf.xacro" />
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+
+    <xacro:robotiq_85_gripper
+        prefix=""
+        parent="flange">
+        <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+    </xacro:robotiq_85_gripper>
+
+</robot>
