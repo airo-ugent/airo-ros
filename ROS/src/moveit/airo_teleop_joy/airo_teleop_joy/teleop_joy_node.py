@@ -5,7 +5,7 @@ from control_msgs.action import GripperCommand
 from geometry_msgs.msg import TwistStamped
 from sensor_msgs.msg import Joy
 
-# TODO: make topics/actions configurable
+# TODO: make topic and action configurable
 JOY_TOPIC_NAME = "/joy"
 SERVO_TWIST_TOPIC_NAME = "/servo_node/delta_twist_cmds"
 
@@ -19,9 +19,12 @@ CONTROL_RATE = 250
 
 class TeleopJoy(rclpy.node.Node):
     """
-    Node that converts Joy messages into Twist commands for a robotic manipulator and optionally also to a GripperCommand actions for a gripper.
+    Node that converts Joy messages into Twist commands for a robotic manipulator
+    and optionally also to a GripperCommand actions to toggle a gripper between opened and closed.
+
     Assumes Moveit Servo is configured and activated to control the robot by subscribing to a Twist messages topic.
-    Assumes a GripperController is configured and activated to control the robot using GripperCommand Action server (Moveit! and Ros control default gripper interface)
+    Assumes a GripperController is configured and activated to control the robot using GripperCommand Action server
+    (Moveit! and Ros control default gripper interface)
     """
 
     GRIPPER_OPEN = 1
