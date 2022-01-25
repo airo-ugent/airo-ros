@@ -21,7 +21,8 @@
   </group>
 
   <!--END EFFECTOR - Purpose - Represent information about an end effector.-->
-  <end_effector name="$(arg prefix)eef" parent_link="$(arg prefix)flange" group="$(arg prefix)robotiq_85" parent_group="$(arg prefix)$(arg name)_manipulator" />
+  <end_effector name="$(arg prefix)eef" parent_link="$(arg prefix)tool0" group="$(arg prefix)robotiq_85" parent_group="$(arg prefix)$(arg name)_manipulator" />
+
 
 
   <!-- TODO collisions!-->
