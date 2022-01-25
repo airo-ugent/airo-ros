@@ -1,4 +1,4 @@
-FROM  moveit/moveit2:galactic-release
+FROM  moveit/moveit2:galactic-source
 
 # install pip and python dev dependencies
 RUN \
