@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: moveit/moveit2:galactic-release
+    container: moveit/moveit2:galactic-source
     steps:
       - uses: actions/checkout@v2
       - name: prepare and build
