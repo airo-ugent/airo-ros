@@ -1,3 +1,6 @@
+#include <string>
+#include <memory>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "moveit/move_group_interface/move_group_interface.h"
@@ -64,6 +67,13 @@ private:
     RCLCPP_DEBUG(LOGGER, "Connected with MGI for group : %s", planning_group.c_str());
 
     mgi.setPoseTarget(request->target_pose, request->frame);
+    mgi.setNumPlanningAttempts(5);
+    mgi.setPlanningTime(10.0);
+    mgi.setWorkspace(-2.0, -2.0, -2.0, 2.0, 2.0, 2.0);
+    mgi.setStartStateToCurrentState();
+    mgi.setGoalJointTolerance(0.02);
+    // TODO(anyone): trajectories are often very inefficient w.r.t. planned trajectories from RVIZ.. Find out why!
+
     // blocking call to MGI
     moveit::planning_interface::MoveItErrorCode error_code = mgi.move();
     RCLCPP_INFO(LOGGER, "MGI move command returned code %i", error_code.val);
