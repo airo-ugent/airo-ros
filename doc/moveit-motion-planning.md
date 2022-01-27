@@ -54,7 +54,7 @@ Cartesian planners were historically not worried about collision checking and as
 
 #### Moveit Servo
 
-Moveit Servo is a soft real-time, Jacobian-based, cartesian planner. It gets to control rates >1kHz (which is a lot faster than the UR e needs) on a best effort. It avoids collisions and singularities, and slows down when moving close towards them. Unlike the other planners, it is not a pluging but a standalone ROS node.
+Moveit Servo is a soft real-time, Jacobian-based, cartesian planner (controller?). It gets to control rates >1kHz (which is a lot faster than the UR e needs) on a best effort. It avoids collisions and singularities, and slows down when moving close towards them. Unlike the other planners, it is not a pluging but a standalone ROS node.
 
 [MOveit ROS2 tutorial](https://moveit.picknik.ai/foxy/doc/realtime_servo/realtime_servo_tutorial.html)
 
