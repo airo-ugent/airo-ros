@@ -8,6 +8,8 @@
 #include "moveit_msgs/srv/apply_planning_scene.hpp"
 #include "airo_moveit_mgi_bridge_msgs/srv/get_frame_pose.hpp"
 #include "airo_moveit_mgi_bridge_msgs/srv/move_to_pose.hpp"
+#include "airo_moveit_mgi_bridge_msgs/srv/execute_cartesian_path.hpp"
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
 
 static const rclcpp::Logger LOGGER = rclcpp::get_logger("mgi_bridge.server");
 
@@ -33,6 +35,13 @@ public:
         "~/get_frame_pose", [&](const std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::GetFramePose::Request> request,
                                 std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::GetFramePose::Response> response) {
           get_frame_pose_service_callback(request, response);
+        });
+
+    execute_cartesian_path_service = this->create_service<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath>(
+        "~/execute_cartesian_path",
+        [&](const std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath::Request> request,
+            std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath::Response> response) {
+          execute_cartesian_path_callback(request, response);
         });
 
     RCLCPP_INFO(LOGGER, "Initialized");
@@ -83,8 +92,8 @@ private:
   /**
    * @brief
    * Service callback for the get pose of frame request to the Move Group Interface.
-   * Frame (link) must be known to moveit (and is not limited to frames that are semantically "end effectors as opposed
-   * to what the")
+   * Frame (link) must be known to moveit (and is not limited to frames that are semantically "end effectors" as opposed
+   * to what the function signature would suggest.)
    */
   void
   get_frame_pose_service_callback(const std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::GetFramePose::Request> request,
@@ -97,6 +106,46 @@ private:
     response->pose = mgi.getCurrentPose(request->frame).pose;
   }
 
+  /**
+   * @brief
+   * Service callback that attempts to move through a set of cartesian waypoints (Poses) using the computeCartesianPath
+   * function of the MGI. The trajectory is post-processed to scale velocities as this is not accounted for by the MGI.
+   *
+   */
+  void execute_cartesian_path_callback(
+      const std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath::Request> request,
+      std::shared_ptr<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath::Response> response)
+  {
+    RCLCPP_INFO(LOGGER, "Received request to execute cartesian trajectory");
+    auto mgi = moveit::planning_interface::MoveGroupInterface(mgi_node, planning_group);
+    RCLCPP_DEBUG(LOGGER, "Connected with MGI for group : %s", planning_group.c_str());
+
+    moveit_msgs::msg::RobotTrajectory trajectory;
+    moveit_msgs::msg::RobotTrajectory scaled_trajectory;
+    double success_rate =
+        mgi.computeCartesianPath(request->waypoints, request->eef_step, request->jump_treshold, trajectory);
+
+    // check if planning was successful
+    if (success_rate < 0.95)
+    {
+      RCLCPP_INFO(LOGGER, "Trajectory success was %f, which is too low, aborting.", success_rate);
+      response->success = false;
+    }
+    else
+    {
+      // Post-process trajectory to limit velocity, as this is not included in the computePath call.
+      //(see https://answers.ros.org/question/258127/set_max_velocity_scaling_factor-in-a-cartesian-path/)
+      trajectory_processing::IterativeParabolicTimeParameterization iptp(100, 0.05);
+      robot_trajectory::RobotTrajectory r_traj(mgi.getRobotModel(), planning_group);
+      r_traj.setRobotTrajectoryMsg(*mgi.getCurrentState(), trajectory);
+      iptp.computeTimeStamps(r_traj, request->max_velocity_scaling, request->max_acceleration_scaling);
+      r_traj.getRobotTrajectoryMsg(scaled_trajectory);
+
+      // blocking call to MGI
+      mgi.execute(scaled_trajectory);
+      response->success = true;
+    }
+  }
   void configure_parameters()
   {
     this->declare_parameter<std::string>("planning_group");
@@ -108,6 +157,7 @@ private:
   std::string planning_group;
   rclcpp::Service<airo_moveit_mgi_bridge_msgs::srv::MoveToPose>::SharedPtr move_to_pose_service;
   rclcpp::Service<airo_moveit_mgi_bridge_msgs::srv::GetFramePose>::SharedPtr get_frame_pose_service;
+  rclcpp::Service<airo_moveit_mgi_bridge_msgs::srv::ExecuteCartesianPath>::SharedPtr execute_cartesian_path_service;
 };
 
 /**

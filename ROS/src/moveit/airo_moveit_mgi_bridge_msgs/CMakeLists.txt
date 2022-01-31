@@ -10,6 +10,7 @@ find_package(geometry_msgs REQUIRED)
 set(srv_files
   "srv/MoveToPose.srv"
   "srv/GetFramePose.srv"
+  "srv/ExecuteCartesianPath.srv"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
