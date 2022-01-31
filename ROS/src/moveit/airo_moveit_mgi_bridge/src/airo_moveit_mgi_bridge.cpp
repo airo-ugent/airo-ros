@@ -75,13 +75,13 @@ private:
     auto mgi = moveit::planning_interface::MoveGroupInterface(mgi_node, planning_group);
     RCLCPP_DEBUG(LOGGER, "Connected with MGI for group : %s", planning_group.c_str());
 
-    mgi.setPoseTarget(request->target_pose, request->frame);
+    // plan in Joint space, which results in more efficient trajectories instead of using generative sampling from IK
+    // as would be the case when planning with a (goal) orientation constraint.
+    mgi.setJointValueTarget(request->target_pose, request->frame);
+
     mgi.setNumPlanningAttempts(5);
     mgi.setPlanningTime(10.0);
-    mgi.setWorkspace(-2.0, -2.0, -2.0, 2.0, 2.0, 2.0);
-    mgi.setStartStateToCurrentState();
-    mgi.setGoalJointTolerance(0.02);
-    // TODO(anyone): trajectories are often very inefficient w.r.t. planned trajectories from RVIZ.. Find out why!
+    mgi.setWorkspace(-1.0, -1.0, -1.0, 1.0, 1.0, 1.0);
 
     // blocking call to MGI
     moveit::planning_interface::MoveItErrorCode error_code = mgi.move();
