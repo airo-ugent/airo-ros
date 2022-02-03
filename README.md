@@ -14,11 +14,15 @@ the ROS packages are located in the `ROS/src/` folder and are divided in 4 subfo
 To set up these packages locally, we recommend using a docker development environment to avoid having issues with ROS installations etc on your local device.
 In VSCode, this is easy to set up (and the repo contains the required configuration files, see `.devcontainer/`). Of course you can manually start up the docker container and ssh into it somehow.
 
-1. Install [vscode](https://code.visualstudio.com/) and the [vscode remote development extension](https://code.visualstudio.com/docs/remote/containers).
-2. Pull this repo
-3. Provide access to the Xserver for the container (for opening RVIZ) by running `xhost + local:` in a host terminal.
-4. Enable GPU sharing for docker containers with the [nvidia container toolkit](https://github.com/NVIDIA/nvidia-docker).
-5. Install all dependencies and build the packages by running `bash build.sh` from the CLI in your container environment.
+1. We pull docker images (see dev.dockerfile) to avoid building them ourselves. However, Docker only allows so many pulls per day if you are not authenticated. So, make an account at https://hub.docker.com/. Choose free account. Choose any username and any email address you own. 
+2. `docker login --username <username> `
+`<access token or pwd>`
+(Recommended to use [access tokens](https://docs.docker.com/docker-hub/access-tokens/) and use a [credentials store](https://docs.docker.com/engine/reference/commandline/login/#credentials-store) for login. )
+2. Install [vscode](https://code.visualstudio.com/) and the [vscode remote development extension](https://code.visualstudio.com/docs/remote/containers).
+3. Pull this repo
+4. Provide access to the Xserver for the container (for opening RVIZ) by running `xhost + local:` in a host terminal.
+5. Enable GPU sharing for docker containers with the [nvidia container toolkit](https://github.com/NVIDIA/nvidia-docker).
+6. Install all dependencies and build the packages by running `bash build.sh` from the CLI in your container environment.
 
 ## Using this repo
 
