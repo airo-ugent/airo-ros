@@ -14,7 +14,7 @@ the ROS packages are located in the `ROS/src/` folder and are divided in 4 subfo
 To set up these packages locally, we recommend using a docker development environment to avoid having issues with ROS installations etc on your local device.
 In VSCode, this is easy to set up (and the repo contains the required configuration files, see `.devcontainer/`). Of course you can manually start up the docker container and ssh into it somehow.
 
-1. We pull docker images (see dev.dockerfile) to avoid building them ourselves. However, Docker only allows so many pulls per day if you are not authenticated. So, make an account at https://hub.docker.com/. Choose free account. Choose any username and any email address you own. 
+1. We pull docker images (see dev.dockerfile) to avoid building them ourselves. However, Docker only allows so many pulls per day if you are not authenticated. So, make an account at https://hub.docker.com/. Choose free account. Choose any username and any email address you own.
 2. `docker login --username <username> `
 `<access token or pwd>`
 (Recommended to use [access tokens](https://docs.docker.com/docker-hub/access-tokens/) and use a [credentials store](https://docs.docker.com/engine/reference/commandline/login/#credentials-store) for login. )
