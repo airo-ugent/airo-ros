@@ -27,7 +27,7 @@ In VSCode, this is easy to set up (and the repo contains the required configurat
 ## Using this repo
 
 As always, once you have built the packages you need to make them available to ROS by "sourcing" the environment.
-From the `ROS/` folder, run `source install/setup.bash`. Now you can run `ros2 pkg list` and you should see the local packages in the list, indicating that they can be used by ROS.
+From the `ROS/` folder, run `source install/setup.bash`. Now you can run `ros2 pkg list` and you should see the local packages in the list, indicating that ROS can use them.
 
 ### Use cases
 This repo supports a number main use cases. Most of these will leverage Moveit2 for planning, collision checking etc.
