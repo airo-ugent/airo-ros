@@ -1,6 +1,5 @@
-
-import os 
-import numpy as np
+import os
 
 def This_is_BAD_FNCTION():
-    return 354 + 1   
+    unused_var = 42
+    return 354 + 1;
