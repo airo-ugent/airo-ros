@@ -19,3 +19,8 @@ jobs:
           export COLCON_WS=${GITHUB_WORKSPACE}/ROS
           bash build.sh
         shell: bash
+      - name: actions/precommits
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
+
