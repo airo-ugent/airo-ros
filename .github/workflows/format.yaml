@@ -22,4 +22,3 @@ jobs:
         run: |
           pip3 install pre-commit
           pre-commit run --all-files
-

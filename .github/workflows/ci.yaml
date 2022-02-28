@@ -19,4 +19,3 @@ jobs:
           export COLCON_WS=${GITHUB_WORKSPACE}/ROS
           bash build.sh
         shell: bash
-
