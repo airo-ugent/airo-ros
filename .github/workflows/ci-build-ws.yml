@@ -21,6 +21,6 @@ jobs:
         shell: bash
       - name: actions/precommits
         run: |
-          pip install pre-commit
+          pip3 install pre-commit
           pre-commit run --all-files
 
