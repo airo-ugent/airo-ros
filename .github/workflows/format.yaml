@@ -1,0 +1,26 @@
+
+name: Code formatting
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - ci
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # container: moveit/moveit2:galactic-source
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Install clang-format-10
+        run: sudo apt-get install clang-format-10
+      - name: actions/precommits
+        run: |
+          pip3 install pre-commit
+          pre-commit run --all-files
+      
+
